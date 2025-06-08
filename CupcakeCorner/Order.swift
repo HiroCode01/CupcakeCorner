@@ -33,4 +33,19 @@ class Order {
     var hasValidAddress: Bool {
         name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty ? false : true
     }
+    
+    var cost: Decimal {
+        var cost = Decimal(quantity) * 2
+        cost += Decimal(type) / 2
+        
+        if extraFrosting {
+            cost += Decimal(quantity)
+        }
+        
+        if addSprinkles {
+            cost += Decimal(quantity) / 2
+        }
+        
+        return cost
+    }
 }
