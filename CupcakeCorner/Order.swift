@@ -7,13 +7,21 @@
 
 import Foundation
 
+@Observable
 class Order {
     static let types: [String] = ["Vanilla", "Chocolate", "Strawberry", "Rainbow"]
     
     var type = 0
     var quantity = 3
     
-    var specialRequestEnabled = false
+    var specialRequestEnabled = false {
+        didSet {
+            if specialRequestEnabled == false {
+                extraFrosting = false
+                addSprinkles = false
+            }
+        }
+    }
     var extraFrosting = false
     var addSprinkles = false
 }
