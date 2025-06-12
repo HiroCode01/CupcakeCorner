@@ -44,7 +44,7 @@ class Order: Codable {
     var zip = ""
     
     var hasValidAddress: Bool {
-        name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty ? false : true
+        name.isEmpty || name.hasPrefix(" ") || streetAddress.isEmpty || streetAddress.hasPrefix(" ") || city.isEmpty || city.hasPrefix(" ") || zip.isEmpty || zip.hasPrefix(" ") ? false : true
     }
     
     var cost: Decimal {

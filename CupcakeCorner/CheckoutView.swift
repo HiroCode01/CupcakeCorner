@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CheckoutView: View {
     var order: Order
-    @State private var confirmationMessage = ""
+    @State private var confirmationTitleAlert = ""
+    @State private var confirmationMessageAlert = ""
     @State private var showingConfirmationAlert = false
     
     var body: some View {
@@ -38,8 +39,8 @@ struct CheckoutView: View {
         .navigationTitle("Checkout")
         .navigationBarTitleDisplayMode(.inline)
         .scrollBounceBehavior(.basedOnSize)
-        .alert("Thank you", isPresented: $showingConfirmationAlert) { } message: {
-            Text(confirmationMessage)
+        .alert("\(confirmationTitleAlert)", isPresented: $showingConfirmationAlert) { } message: {
+            Text(confirmationMessageAlert)
         }
     }
     
@@ -62,10 +63,14 @@ struct CheckoutView: View {
             }
 
             let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
-            confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
+            confirmationTitleAlert = "Thank you!"
+            confirmationMessageAlert = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
             showingConfirmationAlert = true
         } catch {
-            print("Checkout failed: \(error.localizedDescription)")
+            print("Error: \(error.localizedDescription)")
+            confirmationTitleAlert = "Oops!"
+            confirmationMessageAlert = "An error occurred while placing your order. Please try again later."
+            showingConfirmationAlert = true
         }
     }
 }
