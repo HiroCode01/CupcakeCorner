@@ -9,6 +9,8 @@ import Foundation
 
 @Observable
 class Order: Codable {
+    private let userDefaultsAddressKey = "UserAddress"
+    
     enum CodingKeys: String, CodingKey {
         case _type = "type"
         case _quantity = "quantity"
@@ -38,10 +40,26 @@ class Order: Codable {
     var extraFrosting = false
     var addSprinkles = false
     
-    var name = ""
-    var streetAddress = ""
-    var city = ""
-    var zip = ""
+    var name = "" {
+        didSet {
+            saveAddress()
+        }
+    }
+    var streetAddress = "" {
+        didSet {
+            saveAddress()
+        }
+    }
+    var city = "" {
+        didSet {
+            saveAddress()
+        }
+    }
+    var zip = "" {
+        didSet {
+            saveAddress()
+        }
+    }
     
     var hasValidAddress: Bool {
         name.isEmpty || name.hasPrefix(" ") || streetAddress.isEmpty || streetAddress.hasPrefix(" ") || city.isEmpty || city.hasPrefix(" ") || zip.isEmpty || zip.hasPrefix(" ") ? false : true
@@ -60,5 +78,21 @@ class Order: Codable {
         }
         
         return cost
+    }
+    
+    func saveAddress() {
+        if let encoded = try? JSONEncoder().encode(self) {
+            UserDefaults.standard.set(encoded, forKey: userDefaultsAddressKey)
+        }
+    }
+    
+    init() {
+        if let savedData = UserDefaults.standard.data(forKey: userDefaultsAddressKey),
+           let decoded = try? JSONDecoder().decode(Order.self, from: savedData) {
+            self.name = decoded.name
+            self.streetAddress = decoded.streetAddress
+            self.city = decoded.city
+            self.zip = decoded.zip
+        }
     }
 }
